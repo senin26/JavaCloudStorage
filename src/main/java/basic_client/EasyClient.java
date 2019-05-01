@@ -1,12 +1,13 @@
 package basic_client;
 
 import common.ConnectionSettings;
-import common.FilesHandler;
+import common.FilesPreparationUtility;
+
 import java.io.*;
 import java.net.Socket;
 
-import static common.FilesHandler.fileName;
-import static common.FilesHandler.filePathDest;
+import static common.FilesPreparationUtility.fileName;
+import static common.FilesPreparationUtility.filePathDest;
 
 public class EasyClient {
 
@@ -15,11 +16,12 @@ public class EasyClient {
         try  {
             Socket socket = new Socket(ConnectionSettings.getIP_ADDRESS(), ConnectionSettings.getPORT());
             DataInputStream clientIn = new DataInputStream(socket.getInputStream());
-            FileOutputStream fos = new FileOutputStream(FilesHandler.fullFileName.apply(filePathDest,fileName));
+            FileOutputStream fos = new FileOutputStream(FilesPreparationUtility.fullFileName.apply(filePathDest,fileName));
 
             Thread clientInThread = new Thread(() -> {
                 try {
-                    FilesHandler.getFile(clientIn, fos);
+                    ClientFilesHandler.sendFile(fos);
+                    //ClientFilesHandler.getFile(clientIn, fos);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
