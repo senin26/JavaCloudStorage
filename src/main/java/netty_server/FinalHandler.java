@@ -8,15 +8,16 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static common.FilesPreparationUtility.filePathDest;
 import static common.FilesPreparationUtility.fileName;
+import static common.FilesPreparationUtility.filePathDest;
 
-public class ByteToFileHandler extends ChannelInboundHandlerAdapter {
+public class FinalHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = (ByteBuf) msg;
-        Files.write(Paths.get(FilesPreparationUtility.fullFileName.apply(filePathDest, fileName)), buf.array());
-        ctx.fireChannelRead(buf);
+        //ByteBuf buf = (ByteBuf) msg;
+        ctx.writeAndFlush("Server received the file");
+        //buf.release();
+        //ctx.flush();
     }
 
     @Override
