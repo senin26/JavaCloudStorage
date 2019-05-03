@@ -17,16 +17,7 @@ public class EasyClient {
             Socket socket = new Socket(ConnectionSettings.getIP_ADDRESS(), ConnectionSettings.getPORT());
             DataInputStream clientIn = new DataInputStream(socket.getInputStream());
             FileOutputStream fos = new FileOutputStream(FilesPreparationUtility.fullFileName.apply(filePathDest,fileName));
-
-            Thread clientInThread = new Thread(() -> {
-                try {
-                    ClientFilesHandler.sendFile(fos);
-                    //ClientFilesHandler.getFile(clientIn, fos);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-            clientInThread.start();
+            ClientFilesHandler.sendFile(fos);
 
         } catch (Exception e) {
             e.printStackTrace();
