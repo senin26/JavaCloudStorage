@@ -21,7 +21,7 @@ public class NettyCloudServer {
             b.childHandler(new ChannelInitializer<SocketChannel>() { // (4)
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new ByteToFileHandler(), new FinalHandler());
+                    ch.pipeline().addLast(new OutboundHandler(), new ByteToFileHandler());
                 }
             });
             //b.option(ChannelOption.SO_BACKLOG, 128);

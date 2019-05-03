@@ -12,11 +12,18 @@ import static common.FilesPreparationUtility.filePathDest;
 import static common.FilesPreparationUtility.fileName;
 
 public class ByteToFileHandler extends ChannelInboundHandlerAdapter {
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("Client connected...");
+    }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf buf = (ByteBuf) msg;
+        System.out.println("Client connected...");
         Files.write(Paths.get(FilesPreparationUtility.fullFileName.apply(filePathDest, fileName)), buf.array());
-        ctx.fireChannelRead(buf);
+        ctx.fireChannelRead(msg);
     }
 
     @Override
