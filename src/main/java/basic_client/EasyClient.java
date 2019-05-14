@@ -1,26 +1,26 @@
 package basic_client;
 
-import common.ConnectionSettings;
-import common.FilesPreparationUtility;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import java.io.*;
-import java.net.Socket;
+public class EasyClient extends Application {
 
-import static common.FilesPreparationUtility.fileName;
-import static common.FilesPreparationUtility.filePathDest;
-
-public class EasyClient {
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main_client.fxml"));
+        Parent root = fxmlLoader.load();
+        primaryStage.setTitle("Box Client");
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        primaryStage.getMaxHeight();
+    }
 
     public static void main(String[] args) {
-
-        try  {
-            Socket socket = new Socket(ConnectionSettings.getIP_ADDRESS(), ConnectionSettings.getPORT());
-            DataInputStream clientIn = new DataInputStream(socket.getInputStream());
-            FileOutputStream fos = new FileOutputStream(FilesPreparationUtility.fullFileName.apply(filePathDest,fileName));
-            ClientFilesHandler.sendFile(fos);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        launch(args);
     }
+
 }
