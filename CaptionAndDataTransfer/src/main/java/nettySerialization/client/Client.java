@@ -28,13 +28,7 @@ public class Client {
                 MessageHandler.sendFile(out, in, new FileMessage("bigMovieC.avi", SenderType.CLIENT)); // UPLOAD  myClientFile.txt    bigMovieC.avi
                 //MessageHandler.sendRequest(out, new RequestMessage("bigMovieC.avi")); // DOWNLOAD
                 //MessageHandler.getFile(in, out); // DOWNLOAD
-              /*try {
-                    t.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
             } catch (IOException e) {
-                //System.out.println("Some fucking error");
                 e.printStackTrace();
             }
         }
@@ -58,27 +52,6 @@ public class Client {
         }
 
     public static void main(String[] args) {
-        /*String pathName = "clientstorage/".concat("myFile.txt");
-        String str = "This is a fucking cool file";
-        try {
-            Files.createFile(Paths.get(pathName));
-            Path file = Paths.get(pathName);
-            System.out.println("length before " + Files.newByteChannel(Paths.get(pathName)).size());
-            Files.write(Paths.get(pathName), str.getBytes(), StandardOpenOption.WRITE);
-            System.out.println("length after " + Files.newByteChannel(Paths.get(pathName)).size());
-            System.out.println(file.getFileName());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         start();
     }
 }
-
-
-//todo
-/*
-* 1) enum Request
-* UPLOAD_REQUEST
-* DOWNLOAD_REQUEST
-*
-* */
