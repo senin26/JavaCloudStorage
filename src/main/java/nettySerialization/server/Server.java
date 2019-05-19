@@ -11,10 +11,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 public class Server {
 
@@ -31,53 +27,85 @@ public class Server {
             out = new ObjectEncoderOutputStream(socket.getOutputStream());
             in = new ObjectDecoderInputStream(socket.getInputStream(), (Chunk.CHUNK_SIZE.getSizeBytes()+1024*1024));
 
-            // Downloading (from the clients view) thread
+            RequestMessage requestMessage = null;
+            FileMessage fileMessage = null;
 
-          /*  Thread threadDwld = new Thread(() -> {
-                    try {
-                        RequestMessage rm; // new RequestMessage("myServerFile.txt");
-                        while (true) {
-                            Object obj = in.readObject();
-                            if (obj instanceof RequestMessage) {
-                                rm = (RequestMessage) obj;
+            //new ServerMessageHandler().download(in, out);
+            //new ServerMessageHandler().upload(in, out);
+
+            try {
+                while (true) {
+                    Object obj = in.readObject();
+                    if (obj instanceof RequestMessage) {
+                        requestMessage = (RequestMessage) obj;
+                    }
+                    else if (obj instanceof FileMessage) {
+                        fileMessage = (FileMessage) obj;
+                    }
+                    break;
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (requestMessage != null) {
+                System.out.println("Dwnld!");
+                new ServerMessageHandler().download(in, out, requestMessage);
+            }
+            else {
+                System.out.println("Upld!");
+                new ServerMessageHandler().upload(in, out, fileMessage);
+            }
+
+
+
+            /*threadDwld = new Thread(() -> {
+                try {
+                    RequestMessage rm; // new RequestMessage("myServerFile.txt");
+                    while (true) {
+                        Object obj = in.readObject();
+                        if (obj instanceof RequestMessage) {
+                            rm = (RequestMessage) obj;
+                            break;
+                        }
+                    }
+                    System.out.println("requested file " + rm.getFileName()); // todo it's ok, can delete this
+                    String fileName = rm.getFileName();
+                    Handshake hs = null;
+                    FileMessage fm = new FileMessage(fileName, SenderType.SERVER);
+                    while(true) {
+                        System.out.println("in the loop");
+                        if ((rm != null) || hs.equals(Handshake.OK)) {
+                            fm.setBytesChunk();
+                            out.writeObject(fm);
+                            //out.writeObject(Handshake.OK);
+                            System.out.println("Bytes chunk was sent");
+                            if (rm!=null) {
+                                rm = null;
+                            }
+                            while (true) {
+                                Object obj = in.readObject();
+                                if (obj instanceof Handshake) {
+                                    hs = (Handshake) obj;
+                                    System.out.println("Bytes were accepted");
+                                    break;
+                                }
+                            }
+                            if (hs.equals(Handshake.DONE)) {
                                 break;
                             }
                         }
-                            System.out.println("requested file " + rm.getFileName()); // todo it's ok, can delete this
-                            String fileName = rm.getFileName();
-                            Handshake hs = null;
-                            FileMessage fm = new FileMessage(fileName, SenderType.SERVER);
-                            while(true) {
-                                System.out.println("in the loop");
-                                if ((rm != null) || hs.equals(Handshake.OK)) {
-                                    fm.setBytesChunk();
-                                    out.writeObject(fm);
-                                    //out.writeObject(Handshake.OK);
-                                    System.out.println("Bytes chunk was sent");
-                                    if (rm!=null) {
-                                        rm = null;
-                                    }
-                                    while (true) {
-                                        Object obj = in.readObject();
-                                        if (obj instanceof Handshake) {
-                                            hs = (Handshake) obj;
-                                            System.out.println("Bytes were accepted");
-                                            break;
-                                        }
-                                    }
-                                    if (hs.equals(Handshake.DONE)) {
-                                        break;
-                                    }
-                                }
-                            }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                    catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-            });
-            threadDwld.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            });*/
+            /*threadDwld.start();
             try {
                 threadDwld.join();
             } catch (InterruptedException e) {
@@ -85,7 +113,7 @@ public class Server {
             }*/
 
             // Uploading thread
-            Thread threadUpld = new Thread(() -> {
+            /*threadUpld = new Thread(() -> {
                 Object obj;
                 FileMessage fm = null;
                 String pathName;
@@ -124,12 +152,14 @@ public class Server {
                     e.printStackTrace();
                 }
             });
-            threadUpld.start();
+            *//*threadUpld.start();
             try {
                 threadUpld.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            } */
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }

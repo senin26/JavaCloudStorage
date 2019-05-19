@@ -2,14 +2,10 @@ package BytesHandling;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.channels.SeekableByteChannel;
- import java.nio.charset.Charset;
- import java.nio.file.Files;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
- import java.nio.file.StandardOpenOption;
+import java.nio.channels.FileChannel;
 
  public class Client {
 
