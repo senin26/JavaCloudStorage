@@ -5,7 +5,8 @@ import nettySerialization.common.Chunk;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class FileMessage extends AbstractMessage {
 
@@ -25,19 +26,12 @@ public class FileMessage extends AbstractMessage {
     }
 
     public long getSize() {
-        String pathName = null;
         try {
-            switch (senderType) {
-                case CLIENT:
-                    pathName = "clientstorage/";
-                    break;
-                case SERVER:
-                    pathName = "serverstorage/";
-                    break;
-            }
-           size = new FileInputStream(new File(pathName.concat(fileName))).available();
+            System.out.println("filename is " + fileName);
+            System.out.println(Files.exists(Paths.get(fileName)));
+           size = new FileInputStream(new File(fileName)).available();
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // /home/serj/Java/GeekBrains/GEEKBRAINS/JavaCloudStorageGit/cloudStorage/resources/serverStorage/bigMovieC.avi
         }
         return size;
     }
@@ -89,17 +83,9 @@ public class FileMessage extends AbstractMessage {
 
         public byte[] getNextBytesChunk(String fileName, SenderType senderType) {
             FileInputStream fin;
-            String pathName = null;
+            //String pathName = null;
             try {
-                switch (senderType) {
-                    case CLIENT:
-                        pathName = "clientstorage/";
-                        break;
-                    case SERVER:
-                        pathName = "serverstorage/";
-                        break;
-                }
-                fin = new FileInputStream(new File(pathName.concat(fileName)));
+                fin = new FileInputStream(new File(fileName));
                 fin.skip(chunkSize*chunkNumber);
                 if (chunkNumber != (chunkMaxNumber-1)) {
                     fin.read(bytesChunk, 0, chunkSize);

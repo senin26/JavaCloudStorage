@@ -1,5 +1,6 @@
 package nettySerialization.server;
 
+import nettySerialization.common.PathUtil;
 import nettySerialization.message.*;
 
 import java.io.IOException;
@@ -9,8 +10,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.logging.Logger;
 
 public class ServerMessageHandler {
+
+    private static final Logger LOG = Logger.getLogger(ServerMessageHandler.class.getName());
+
+    private String getAbsFileName(String fileName) {
+        System.out.println("Full fileName is " + PathUtil.getAbsoluteSubpath()+"/serverStorage/"+fileName);
+        return PathUtil.getAbsoluteSubpath()+"/serverStorage/"+fileName;
+    }
 
     public void download(ObjectInput in, ObjectOutput out, RequestMessage requestMessage) {
         Thread threadDwld = new Thread(() -> {
@@ -25,7 +34,7 @@ public class ServerMessageHandler {
                     }
                 }*/
                 System.out.println("requested file " + rm.getFileName()); // todo it's ok, can delete this
-                String fileName = rm.getFileName();
+                String fileName = getAbsFileName(rm.getFileName());
                 Handshake hs = null;
                 FileMessage fm = new FileMessage(fileName, SenderType.SERVER);
                 while (true) {
@@ -65,6 +74,12 @@ public class ServerMessageHandler {
         }
     }
 
+    private String getShortFileName(String absFilename) {
+        String[] fileNameSplitted = absFilename.split("/");
+        int len = fileNameSplitted.length;
+        return fileNameSplitted[len-1];
+    }
+
     public void upload(ObjectInput in, ObjectOutput out, FileMessage fileMessage) {
         Thread threadUpld = new Thread(() -> {
             Object obj;
@@ -74,7 +89,7 @@ public class ServerMessageHandler {
             Handshake hs = Handshake.OK;
             try {
                 //obj = in.readObject();
-                pathName = "serverstorage/".concat(fm.getFileName());
+                pathName = PathUtil.getAbsoluteSubpath()+"/serverStorage/"+getShortFileName(fm.getFileName());
                 file = Paths.get(pathName);
                 Files.createFile(file);
                 /*if (obj instanceof FileMessage) {

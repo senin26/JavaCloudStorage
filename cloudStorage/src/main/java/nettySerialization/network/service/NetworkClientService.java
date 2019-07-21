@@ -1,7 +1,6 @@
 package nettySerialization.network.service;
 
 
-import nettySerialization.message.AbstractMessage;
 import nettySerialization.message.FileMessage;
 import nettySerialization.message.RequestMessage;
 import nettySerialization.network.Network;

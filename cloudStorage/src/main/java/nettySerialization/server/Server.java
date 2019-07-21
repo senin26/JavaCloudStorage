@@ -4,7 +4,8 @@ import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
 import nettySerialization.common.Chunk;
 import nettySerialization.common.ConnectionSettings;
-import nettySerialization.message.*;
+import nettySerialization.message.FileMessage;
+import nettySerialization.message.RequestMessage;
 
 import java.io.IOException;
 import java.io.ObjectInput;

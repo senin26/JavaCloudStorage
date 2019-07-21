@@ -2,7 +2,7 @@ package nettySerialization.network.repo;
 
 
 
-import nettySerialization.message.AbstractMessage;
+import nettySerialization.common.PathUtil;
 import nettySerialization.message.FileMessage;
 import nettySerialization.message.Handshake;
 import nettySerialization.message.RequestMessage;
@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.logging.Logger;
 
 public class NetworkClientRepo {
 
@@ -75,6 +76,14 @@ public class NetworkClientRepo {
         }
     }
 
+    private static final Logger LOG = Logger.getLogger(NetworkClientRepo.class.getName());
+
+    private String getShortFileName(String absFilename) {
+        String[] fileNameSplitted = absFilename.split("/");
+        int len = fileNameSplitted.length;
+        return fileNameSplitted[len-1];
+    }
+
     public boolean getFile(ObjectInput in, ObjectOutput out) {
         Thread thread = new Thread(() -> {
             FileMessage fm = null;
@@ -85,18 +94,19 @@ public class NetworkClientRepo {
                     obj = in.readObject();
                     if (obj instanceof FileMessage) {
                         fm = (FileMessage) obj;
-                        System.out.println("ready to break");
+                        System.out.println("ready to break, fm is " + fm.getFileName());
                         break;
                     }
+                    LOG.info("fm == null?" + (fm==null));
                 }
                 //
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(); // /home/serj/Java/GeekBrains/GEEKBRAINS/JavaCloudStorageGit/cloudStorage/resources/serverStorage/bigMovieC.avi
             }
-            String pathName = "clientstorage/".concat(fm.getFileName());
+            String pathName = PathUtil.getAbsoluteSubpath()+"/clientStorage/"+getShortFileName(fm.getFileName());
             System.out.println("ready to get " + fm.getFileName()); // delete this, it's just a service message
             try {
                 Path file = Paths.get(pathName);
